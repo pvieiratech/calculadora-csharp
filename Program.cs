@@ -1,56 +1,71 @@
 ﻿using System;
 using System.Globalization;
-using Calculadora.Service;
+using System.Runtime.InteropServices.Marshalling;
+using Calculadora;
 
 namespace Calculadora
 {
-    class Program
+    class Program 
     {
         public static void Main()
         {
-            Console.WriteLine("Bem-vindo a Calculadora de PvieiraDev ;)");
-            Console.WriteLine("Informe qual operação deseja Realizar: ");
-            Console.WriteLine("Digite apenas o simbolo");
-            string? operador;
-               
+            CalculadoraService calculadora = new CalculadoraService();
+            MenuSystem menu = new MenuSystem();
 
+            menu.BoasVindas();           
+            string? operador;
+            string? continuar = "s";
+               
             while(true)
             {
-                Console.WriteLine("+ adição, - subtração, / divisão ou * multiplicação?");
-                operador = Console.ReadLine();
-                if(operador == "+" || operador == "-" || operador == "/" || operador == "*")
+                if(continuar == "s")
+                {
+                    operador = menu.VerificarOperador();
+
+                    double numero1 = valores("Digite o primeiro número:");
+                    double numero2 = valores("Digite o segundo número");
+
+                    while (true)
+                    {
+                        if(operador == "/" && numero2 == 0)
+                        {
+                            Console.WriteLine("Não é possivel realizar uma divisão por 0");
+                            numero2 = valores("Digite um valor valido: ");
+                        } 
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    switch (operador)
+                    {
+                        case "+":
+                        menu.TextAdicao(numero1, numero2, calculadora.Adicao(numero1, numero2));
+                        break;
+
+                        case "-":
+                        menu.TextSubtracao(numero1, numero2, calculadora.Subtracao(numero1, numero2));
+                        break;
+
+                        case "/":
+                        menu.TextDivisao(numero1, numero2, calculadora.Divisao(numero1, numero2));
+                        break;
+
+                        case "*":
+                        menu.TextMultiplicacao(numero1, numero2, calculadora.Multiplicacao(numero1, numero2));
+                        break;
+                    }
+
+                    Console.WriteLine("Deseja realizar outra conta? (s/n)");
+                    continuar =Console.ReadLine();
+                } 
+                else
                 {
                     break;
-                }   else
-                {
-                    Console.WriteLine("Operador digitado incorretamente");
-                    Console.WriteLine("Digite Novamente: ");
-                }
+                }    
             }
-
-
-
-            double numero1 = valores("Digite o primeiro número:");
-            double numero2 = valores("Digite o segundo número"); 
-
-            switch (operador)
-            {
-                case "+":
-                Calculadora.Service.CalculadoraService.adicao(numero1, numero2);
-                break;
-
-                case "-":
-                Calculadora.Service.CalculadoraService.subtracao(numero1, numero2);
-                break;
-
-                case "/":
-                Calculadora.Service.CalculadoraService.divisao(numero1, numero2);
-                break;
-
-                case "*":
-                Calculadora.Service.CalculadoraService.multiplicacao(numero1, numero2);
-                break;
-            }
+                   
         }
 
         public static double valores(string mensagem)
